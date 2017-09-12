@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
 
-
-
     }
 
     @Override
@@ -160,8 +158,12 @@ public class MainActivity extends AppCompatActivity {
             BluetoothDevice btDevice = result.getDevice();
             connectToDevice(btDevice);
 
-            if(result.getDevice().getName() != null && !result.getDevice().getName().isEmpty()) {
+            if(result.getDevice().getName() != null && !result.getDevice().getName().isEmpty() && !randomStringList.contains(result.getDevice().getName())) {
                 randomStringList.add(result.getDevice().getName());
+                listAdapter.notifyDataSetChanged();
+            }
+            else if(!randomStringList.contains(result.getDevice().getAddress())) {
+                randomStringList.add(result.getDevice().getAddress());
                 listAdapter.notifyDataSetChanged();
             }
         }
@@ -200,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
     public void connectToDevice(BluetoothDevice device) {
         if (mGatt == null) {
             mGatt = device.connectGatt(this, false, gattCallback);
-            scanLeDevice(false);// will stop after first device detection
+            scanLeDevice(true);// will stop after first device detection
         }
     }
 
